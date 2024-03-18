@@ -1,0 +1,9 @@
+{
+  "rootName": "NFCU",
+  "children": [
+    {
+      "caption": "Test1",
+      "url": "https://www.google.com"
+    }
+  ]
+}

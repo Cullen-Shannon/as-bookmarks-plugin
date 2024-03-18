@@ -28,31 +28,9 @@
 
     </extensions>
 
-<!--    <actions>-->
-<!--        <action-->
-<!--                id="com.example.myplugin.PopupDialogAction"-->
-<!--                class="com.example.myplugin.PopupDialogAction"-->
-<!--                text="Action Basics Plugin: Popup Dialog Action"-->
-<!--                description="SDK action example"-->
-<!--                icon="SdkIcons.Sdk_default_icon">-->
-<!--            <override-text place="MainMenu" text="Popup Dialog Action"/>-->
-<!--            <keyboard-shortcut-->
-<!--                    keymap="$default"-->
-<!--                    first-keystroke="control alt A"-->
-<!--                    second-keystroke="C"/>-->
-<!--            <mouse-shortcut-->
-<!--                    keymap="$default"-->
-<!--                    keystroke="control button3 doubleClick"/>-->
-<!--            <add-to-group group-id="ToolsMenu" anchor="first"/>-->
-<!--        </action>-->
-<!--    </actions>-->
 
+    <!-- Ideally we'd figure a way to get this running at the top level, instead of nested under Tools -->
     <actions>
-        <action id="com.example.myplugin.PopupDialogAction" class="com.example.myplugin.PopupDialogAction"
-                text="Pop Dialog Action" description="SDK action example">
-            <add-to-group group-id="ToolsMenu" anchor="first"/>
-        </action>
-
         <group
                 id="com.example.myplugin.DynamicActionGroup"
                 class="com.example.myplugin.DynamicActionGroup"
@@ -65,8 +43,6 @@
         </group>
 
     </actions>
-
-
 
 
 </idea-plugin>
