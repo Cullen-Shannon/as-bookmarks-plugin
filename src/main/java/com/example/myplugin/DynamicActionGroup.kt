@@ -23,16 +23,17 @@ import com.intellij.psi.search.GlobalSearchScope
 class DynamicActionGroup(var menuItem: MyMenuItem? = null): ActionGroup() {
 
     override fun update(e: AnActionEvent) {
-        println("update")
         val project = e.project
         e.presentation.isEnabledAndVisible = project != null
         if (project == null) return
 
         if (menuItem == null) {
+            // todo error handling -- missing file, malformed json, etc.
             val config = FilenameIndex.getVirtualFilesByName("config.json", GlobalSearchScope.allScope(project))
             if (config.size != 1) throw Exception("Unexpected number of config files")
             val text = LoadTextUtil.loadText(config.first())
             menuItem = Gson().fromJson(text.toString(), MyMenuItem::class.java)
+            menuItem!!.isTopLevel = true
         }
         e.presentation.isPopupGroup = true
         e.presentation.text = menuItem!!.text
@@ -52,6 +53,11 @@ class DynamicActionGroup(var menuItem: MyMenuItem? = null): ActionGroup() {
                 array.add(DynamicActionGroup(it))
             }
             if (it.addSeparatorAfter == true) array.add(Separator.getInstance())
+        }
+        // Add a custom edit menu to launch our UI
+        if (menuItem!!.isTopLevel) {
+            array.add(Separator.getInstance())
+            array.add(MyEditAction())
         }
         return array.toTypedArray()
     }
