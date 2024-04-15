@@ -6,11 +6,41 @@
 
     <depends>com.intellij.modules.platform</depends>
 
+    <depends>org.jetbrains.android</depends>
+
+    <!--    Removed this line since it threw an error-->
+    <!--    <depends>com.intellij.modules.androidstudio</depends>-->
+
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow factoryClass="org.jetbrains.plugins.template.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+
+        <applicationService serviceImplementation="org.jetbrains.plugins.template.AppSettingsState"/>
+
+        <applicationConfigurable
+                parentId="tools"
+                instance="org.jetbrains.plugins.template.AppSettingsConfigurable"
+                id="org.jetbrains.plugins.template.AppSettingsConfigurable"
+                displayName="SDK: Application Settings Example"/>
     </extensions>
+
+    <!-- Ideally we'd figure a way to get this running at the top level, instead of nested under Tools -->
+    <!-- Update: adding top level is discouraged, so we'll stick with Tools after all. -->
+    <!-- https://intellij-support.jetbrains.com/hc/en-us/community/posts/6233065499666-How-to-correctly-create-the-plugin-menu-in-plugin-xml -->
+    <actions>
+        <group
+                id="org.jetbrains.plugins.template.DynamicActionGroup"
+                class="org.jetbrains.plugins.template.DynamicActionGroup"
+                popup="true"
+                text="Dynamically Grouped Actions"
+                description="SDK dynamically grouped action example">
+            <add-to-group
+                    group-id="ToolsMenu"
+                    anchor="first"/>
+        </group>
+
+    </actions>
 
     <applicationListeners>
         <listener class="org.jetbrains.plugins.template.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>

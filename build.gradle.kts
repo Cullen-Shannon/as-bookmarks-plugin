@@ -24,6 +24,7 @@ repositories {
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
 //    implementation(libs.annotations)
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 // Set the JVM language level used to build the project.
@@ -108,12 +109,9 @@ tasks {
         password = environment("PRIVATE_KEY_PASSWORD")
     }
 
-    publishPlugin {
-        dependsOn("patchChangelog")
-        token = environment("PUBLISH_TOKEN")
-        // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
-        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
-        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels = properties("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
+    runIde {
+        // Absolute path to installed target 3.5 Android Studio to use as
+        // IDE Development Instance (the "Contents" directory is macOS specific):
+        ideDir.set(file("/Applications/Android Studio.app/Contents"))
     }
 }
