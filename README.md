@@ -1,15 +1,14 @@
 # IntelliJ Platform Plugin Template
 
 ## Notes for Graham and Cullen
-I copied the org.jetbrains.plugins.template as instructed by the docs. 
-I left the Tool Window implementation in place for now as an example reference; we can move it whenever. 
-We'll need to come up with a name for this project soon so we can replace the package name and default menu name. 
-I'll remove MyDialog eventually once the Settings-based UI is complete. 
-Still a lot left to do in the Settings UI, including adding and removing items, reordering them, etc. 
-Also, I need to open our Settings menu from the bottom menu click.
-I looked through your PR to see if any of it applied to this latest project template, but was reluctant to make too many
-change to what IntelliJ considers a template. If you think we should tweak anything release-wise, feel free to add it.
-Leaving the original README below for now.
+- I copied the org.jetbrains.plugins.template as instructed by the docs. 
+- I left the Tool Window implementation in place for now as an example reference; we can move it whenever. 
+- We'll need to come up with a name for this project soon so we can replace the package name and default menu name. 
+- I'll remove MyDialog eventually once the Settings-based UI is complete. 
+- Still a lot left to do in the Settings UI, including adding and removing items, reordering them, etc. 
+- Also, I need to open our Settings menu from the bottom menu click.
+- I looked through your PR to see if any of it applied to this latest project template, but was reluctant to make too many change to what IntelliJ considers a template. If you think we should tweak anything release-wise, feel free to add it.
+- Leaving the original README below for now.
 
 [![official JetBrains project](https://jb.gg/badges/official.svg)][jb:github]
 [![Twitter Follow](https://img.shields.io/badge/follow-%40JBPlatform-1DA1F2?logo=twitter)](https://twitter.com/JBPlatform)
