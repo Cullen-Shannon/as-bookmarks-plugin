@@ -28,7 +28,7 @@ class DynamicActionGroup(var menuItem: MyMenuItem? = null): ActionGroup() {
         if (project == null) return
 
         if (menuItem == null) {
-            // todo error handling -- missing file, malformed json, etc.
+            // todo: error handling -- missing file, malformed json, etc., changing file name, etc.
             val config = FilenameIndex.getVirtualFilesByName("config.json", GlobalSearchScope.allScope(project))
             if (config.size != 1) throw Exception("Unexpected number of config files")
             val text = LoadTextUtil.loadText(config.first())
@@ -57,7 +57,7 @@ class DynamicActionGroup(var menuItem: MyMenuItem? = null): ActionGroup() {
         // Add a custom edit menu to launch our UI
         if (menuItem!!.isTopLevel) {
             array.add(Separator.getInstance())
-            array.add(MyEditAction())
+            array.add(OpenSettingsAction())
         }
         return array.toTypedArray()
     }
