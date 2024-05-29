@@ -2,11 +2,12 @@ package org.jetbrains.plugins.template
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.options.ShowSettingsUtil
 
 /**
- * Custom item to launch our UI
+ * Custom item to open our menu in settings
  */
-class MyEditAction: AnAction() {
+class OpenSettingsAction: AnAction() {
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = e.project != null
         e.presentation.text = "Edit Items..."
@@ -14,7 +15,7 @@ class MyEditAction: AnAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        MyDialog.main(arrayOf())
+        ShowSettingsUtil.getInstance().showSettingsDialog(e.project, AppSettingsConfigurable::class.java)
     }
 
 }

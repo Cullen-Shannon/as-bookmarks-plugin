@@ -14,15 +14,13 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="org.jetbrains.plugins.template.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-
         <applicationService serviceImplementation="org.jetbrains.plugins.template.AppSettingsState"/>
 
         <applicationConfigurable
                 parentId="tools"
                 instance="org.jetbrains.plugins.template.AppSettingsConfigurable"
                 id="org.jetbrains.plugins.template.AppSettingsConfigurable"
-                displayName="SDK: Application Settings Example"/>
+                displayName="TODO Our Plugin Name"/>
     </extensions>
 
     <!-- Ideally we'd figure a way to get this running at the top level, instead of nested under Tools -->
