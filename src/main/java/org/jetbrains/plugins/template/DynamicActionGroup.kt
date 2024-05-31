@@ -4,8 +4,11 @@ import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Separator
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.treeStructure.Tree
+import org.jetbrains.plugins.template.domain.MyMenuItem
 import org.jetbrains.plugins.template.services.FileInputService
+import org.jetbrains.plugins.template.services.PluginSettingsService
 import javax.swing.tree.DefaultMutableTreeNode
 
 /* TODOs
@@ -19,15 +22,22 @@ import javax.swing.tree.DefaultMutableTreeNode
  * Represents a group of menu items. menuItem will be null for the top level menu defined in plugin.xml.
  * Otherwise we can pass in the child object recursively to allow for infinite nesting based on user configuration.
  */
-class DynamicActionGroup(var menuItem: MyMenuItem? = null) : ActionGroup() {
+class DynamicActionGroup(var menuItem: MyMenuItem? = null, ) : ActionGroup() {
 
-    val fileInputService = FileInputService()
+    private val project = ProjectManager.getInstance().openProjects.first()
+    private val fileInputService = FileInputService.getInstance(project)
+    private val pluginSettingsService = PluginSettingsService.getInstance(project)
 
     override fun update(e: AnActionEvent) {
         // TODO: Error Handling
         if (menuItem == null) {
             // Read in top level menu item
             menuItem = fileInputService.readConfigFileContents()
+
+            if (menuItem != null) {
+                // Update the current model with the menu that was just read in
+                pluginSettingsService.state.currentMenuItemConfig = menuItem
+            }
         }
 
         val rootNode = DefaultMutableTreeNode(menuItem?.text)
