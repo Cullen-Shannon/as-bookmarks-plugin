@@ -4,6 +4,7 @@ import com.intellij.ide.browsers.BrowserLauncher
 import com.intellij.ide.browsers.WebBrowserManager
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import org.jetbrains.plugins.template.domain.MyMenuItem
 
 /**
  * Represents a single actionable menu item. This will only be invoked once we've reached the bottom of the recursive

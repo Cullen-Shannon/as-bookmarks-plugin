@@ -6,7 +6,7 @@ import com.intellij.psi.xml.XmlFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PsiErrorElementUtil
-import org.jetbrains.plugins.template.services.MyProjectService
+import org.jetbrains.plugins.template.services.FileInputService
 
 @TestDataPath("\$CONTENT_ROOT/src/test/testData")
 class MyPluginTest : BasePlatformTestCase() {
@@ -30,9 +30,9 @@ class MyPluginTest : BasePlatformTestCase() {
     }
 
     fun testProjectService() {
-        val projectService = project.service<MyProjectService>()
+        val projectService = project.service<FileInputService>()
 
-        assertNotSame(projectService.getRandomNumber(), projectService.getRandomNumber())
+        // TODO: run some validation here
     }
 
     override fun getTestDataPath() = "src/test/testData/rename"

@@ -4,6 +4,7 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.layout.not
+import org.jetbrains.plugins.template.domain.MyMenuItem
 import javax.swing.JComponent
 
 class MyDialog(private val myMenuItem: MyMenuItem): DialogWrapper(true) {

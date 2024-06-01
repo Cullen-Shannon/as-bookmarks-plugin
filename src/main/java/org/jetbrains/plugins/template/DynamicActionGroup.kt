@@ -1,13 +1,15 @@
 package org.jetbrains.plugins.template
 
-import com.google.gson.Gson
 import com.intellij.openapi.actionSystem.ActionGroup
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.Separator
-import com.intellij.openapi.fileEditor.impl.LoadTextUtil
-import com.intellij.psi.search.FilenameIndex
-import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.openapi.project.ProjectManager
+import com.intellij.ui.treeStructure.Tree
+import org.jetbrains.plugins.template.domain.MyMenuItem
+import org.jetbrains.plugins.template.services.FileInputService
+import org.jetbrains.plugins.template.services.PluginSettingsService
+import javax.swing.tree.DefaultMutableTreeNode
 
 /* TODOs
     replace pluginIcon.svg with something more meaningful
@@ -20,25 +22,32 @@ import com.intellij.psi.search.GlobalSearchScope
  * Represents a group of menu items. menuItem will be null for the top level menu defined in plugin.xml.
  * Otherwise we can pass in the child object recursively to allow for infinite nesting based on user configuration.
  */
-class DynamicActionGroup(var menuItem: MyMenuItem? = null): ActionGroup() {
+class DynamicActionGroup(var menuItem: MyMenuItem? = null, ) : ActionGroup() {
+
+    private val project = ProjectManager.getInstance().openProjects.first()
+    private val fileInputService = FileInputService.getInstance(project)
+    private val pluginSettingsService = PluginSettingsService.getInstance(project)
 
     override fun update(e: AnActionEvent) {
-        val project = e.project
-        e.presentation.isEnabledAndVisible = project != null
-        if (project == null) return
-
+        // TODO: Error Handling
         if (menuItem == null) {
-            // todo: error handling -- missing file, malformed json, etc., changing file name, etc.
-            val config = FilenameIndex.getVirtualFilesByName("config.json", GlobalSearchScope.allScope(project))
-            if (config.size != 1) throw Exception("Unexpected number of config files")
-            val text = LoadTextUtil.loadText(config.first())
-            menuItem = Gson().fromJson(text.toString(), MyMenuItem::class.java)
-            menuItem!!.isTopLevel = true
-        }
-        e.presentation.isPopupGroup = true
-        e.presentation.text = menuItem!!.text
-        e.presentation.description = menuItem!!.description
+            // Read in top level menu item
+            menuItem = fileInputService.readConfigFileContents()
 
+            if (menuItem != null) {
+                // Update the current model with the menu that was just read in
+                pluginSettingsService.state.currentMenuItemConfig = menuItem
+            }
+        }
+
+        val rootNode = DefaultMutableTreeNode(menuItem?.text)
+
+        val tree = Tree(rootNode)
+
+        tree.isRootVisible = true
+        e.presentation.isPopupGroup = true
+        e.presentation.text = menuItem?.text
+        e.presentation.description = menuItem?.description
     }
 
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
