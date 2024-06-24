@@ -63,6 +63,15 @@ class AppSettingsConfigurable : Configurable {
         }
     }
 
+    /*
+        More TODOs:
+        reorder list to move items up and down
+        Add as a sibling in the list instead of at the bottom of the parent
+        double click to enter edit menu
+        Add divider options
+        Consider slightly different format for collection vs individual record, if possible
+     */
+
     private fun myTreeDecorated(): JPanel {
 
         // TODO: Error Handling
