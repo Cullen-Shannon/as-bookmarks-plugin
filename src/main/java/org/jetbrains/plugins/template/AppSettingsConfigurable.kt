@@ -16,6 +16,8 @@ import java.awt.Dimension
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.tree.DefaultMutableTreeNode
+import javax.swing.tree.DefaultTreeModel
+import javax.swing.tree.TreeSelectionModel
 
 class AppSettingsConfigurable : Configurable {
 
@@ -25,12 +27,6 @@ class AppSettingsConfigurable : Configurable {
 
     // The tree representing the current `MyMenuItem` config, update this when adding/removing elements
     private var currentTree: Tree? = null
-
-    // dummy item for dev purposes
-    private val dummyMenuItem = MyMenuItem(
-            text = "text",
-            description = "description"
-    )
 
     // Keep track of the "Path" text field so that we can read the value
     private var pathTextFieldCell: Cell<JBTextField>? = null
@@ -68,39 +64,74 @@ class AppSettingsConfigurable : Configurable {
     }
 
     private fun myTreeDecorated(): JPanel {
-        val menuItem = fileInputService.readConfigFileContents()
-
-        var rootNode: DefaultMutableTreeNode? = null
 
         // TODO: Error Handling
-        if (menuItem != null) {
-            // Update the plugin's model with the menu that was just read in
-            pluginSettingsService.state.currentMenuItemConfig = menuItem
-            rootNode = DefaultMutableTreeNode(menuItem.text)
-            if (menuItem.children != null) {
-                FileInputUtil.readInTreeChildren(rootNode = rootNode, children = menuItem.children!!)
-            }
-        }
-
+        // Update the plugin's model with the menu that was just read in
+        val model = fileInputService.readConfigFileContents()!!
+        pluginSettingsService.state.currentMenuItemConfig = model
+        val rootNode = DefaultMutableTreeNode(model)
+        FileInputUtil.readInTreeChildren(rootNode = rootNode, children = model.children!!)
         currentTree = Tree(rootNode)
         currentTree!!.isRootVisible = true
+        currentTree!!.selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
+
+        // this might work if we want to add a double click event; leaving for reference
+//        currentTree!!.addMouseListener(object : MouseListener {
+//            override fun mouseClicked(e: MouseEvent?) {
+//                if (e?.clickCount == 2 && !e.isConsumed) {
+//                    e.consume();
+//                    println(e)
+//                }
+//            }
+//            override fun mousePressed(p0: MouseEvent?) {}
+//            override fun mouseReleased(p0: MouseEvent?) {}
+//            override fun mouseEntered(p0: MouseEvent?) {}
+//            override fun mouseExited(p0: MouseEvent?) {}
+//        })
 
         val decoratedTree = ToolbarDecorator.createDecorator(currentTree!!)
-                .setAddAction {
-                    if (MyDialog(dummyMenuItem).showAndGet()) {
-                        Log.e("TAGX", "Got it!")
+            .setAddAction {
+                val changed = MyDialog(MyMenuItem("", "")) {
+                    val selection = currentTree!!.lastSelectedPathComponent as DefaultMutableTreeNode?
+                    val _model = currentTree!!.model as DefaultTreeModel
+                    if (selection == null) {
+                        val root = _model.root as DefaultMutableTreeNode
+                        root.add(DefaultMutableTreeNode(it))
+                        _model.reload()
+                    } else {
+                        val selCasted = selection.userObject as MyMenuItem
+                        val addToParent = selCasted.children == null
+                        if (addToParent) {
+                            (selection.parent as DefaultMutableTreeNode).add(DefaultMutableTreeNode(it))
+                            _model.reload(selection.parent as DefaultMutableTreeNode)
+                        } else {
+                            selection.add(DefaultMutableTreeNode(it))
+                            _model.reload(selection)
+                        }
                     }
-                }
-                .setRemoveAction { Log.e("TAGX", "TODO remove") }
-                .setEditAction { Log.e("TAGX", "TODO edit") }
-                .setPreferredSize(Dimension(400, 300)) // TODO -- can't figure out a way around needing this
-                .createPanel()
+                }.showAndGet()
+                if (changed) isModified = true
+            }
+            .setRemoveAction {
+                val selection = currentTree!!.lastSelectedPathComponent as DefaultMutableTreeNode
+                val _model = currentTree!!.model as DefaultTreeModel
+                _model.removeNodeFromParent(selection)
+                isModified = true
+            }
+            .setEditAction {
+                val selection = currentTree!!.lastSelectedPathComponent as DefaultMutableTreeNode
+                val changed = MyDialog(selection.userObject as MyMenuItem) {
+                    selection.userObject = it
+                    (currentTree!!.model as DefaultTreeModel).reload()
+                }.showAndGet()
+                if (changed) isModified = true
+            }
+            .setPreferredSize(Dimension(600, 400)) // TODO -- can't figure out a way around needing this
+            .createPanel()
         return decoratedTree
     }
 
-    override fun isModified(): Boolean {
-        return isModified
-    }
+    override fun isModified() = isModified
 
     override fun apply() {
         // TODO: Error Handling
@@ -128,7 +159,7 @@ class AppSettingsConfigurable : Configurable {
     }
 
     override fun getPreferredFocusedComponent(): JComponent? {
-        return super.getPreferredFocusedComponent()
+        return pathTextFieldCell!!.component
     }
 
     override fun disposeUIResources() {

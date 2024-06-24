@@ -27,6 +27,7 @@ class FileInputService {
             if (configFile != null) {
                 val text = LoadTextUtil.loadText(configFile)
                 menuItem = Gson().fromJson(text.toString(), MyMenuItem::class.java)
+                menuItem.isTopLevel = true
             }
 
             return menuItem

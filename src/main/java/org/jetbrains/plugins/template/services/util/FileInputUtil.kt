@@ -14,7 +14,7 @@ object FileInputUtil {
      */
     fun readInTreeChildren(rootNode: DefaultMutableTreeNode, children: List<MyMenuItem>) {
         for (child in children) {
-            val childNode = DefaultMutableTreeNode(child.text)
+            val childNode = DefaultMutableTreeNode(child)
             rootNode.add(childNode)
 
             // Recursively read in the tree's children
