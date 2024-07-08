@@ -22,13 +22,14 @@ import javax.swing.tree.DefaultMutableTreeNode
  * Represents a group of menu items. menuItem will be null for the top level menu defined in plugin.xml.
  * Otherwise we can pass in the child object recursively to allow for infinite nesting based on user configuration.
  */
-class DynamicActionGroup(var menuItem: MyMenuItem? = null, ) : ActionGroup() {
-
-    private val project = ProjectManager.getInstance().openProjects.first()
-    private val fileInputService = FileInputService.getInstance(project)
-    private val pluginSettingsService = PluginSettingsService.getInstance(project)
+class DynamicActionGroup(var menuItem: MyMenuItem? = null ) : ActionGroup() {
 
     override fun update(e: AnActionEvent) {
+
+        val project = ProjectManager.getInstance().openProjects.first()
+        val fileInputService = FileInputService.getInstance(project)
+        val pluginSettingsService = PluginSettingsService.getInstance(project)
+
         // TODO: Error Handling
         if (menuItem == null) {
             // Read in top level menu item
@@ -55,13 +56,13 @@ class DynamicActionGroup(var menuItem: MyMenuItem? = null, ) : ActionGroup() {
 
         val array = mutableListOf<AnAction>()
         menuItem!!.children!!.forEach {
-            if (it.addSeparatorBefore == true) array.add(Separator.getInstance())
+            if (it.addSeparatorBefore) array.add(Separator.getInstance())
             if (it.children.isNullOrEmpty()) {
                 array.add(MyAction(it))
             } else {
                 array.add(DynamicActionGroup(it))
             }
-            if (it.addSeparatorAfter == true) array.add(Separator.getInstance())
+            if (it.addSeparatorAfter) array.add(Separator.getInstance())
         }
         // Add a custom edit menu to launch our UI
         if (menuItem!!.isTopLevel) {
