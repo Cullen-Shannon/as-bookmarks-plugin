@@ -20,7 +20,7 @@
                 parentId="tools"
                 instance="org.jetbrains.plugins.template.AppSettingsConfigurable"
                 id="org.jetbrains.plugins.template.AppSettingsConfigurable"
-                displayName="TODO Our Plugin Name"/>
+                displayName="Repo Depot"/>
     </extensions>
 
     <!-- Ideally we'd figure a way to get this running at the top level, instead of nested under Tools -->
