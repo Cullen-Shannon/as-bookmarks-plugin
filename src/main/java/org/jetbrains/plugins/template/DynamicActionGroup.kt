@@ -14,15 +14,21 @@ import javax.swing.tree.DefaultMutableTreeNode
 /* TODOs
     replace pluginIcon.svg with something more meaningful
     update plugin.xml with our publishing info
-    use a different name than config.json, depending on whatever we name this
-    add edit menu, default values, help modal
+*/
+
+/*
+    For V2:
+        clean up any non-critical TODOs
+        support other functions besides links to browser (shell, gradle tasks, information bubbles, etc.)
+        rewrite any java classes in Kotlin
  */
+
 
 /**
  * Represents a group of menu items. menuItem will be null for the top level menu defined in plugin.xml.
  * Otherwise we can pass in the child object recursively to allow for infinite nesting based on user configuration.
  */
-class DynamicActionGroup(var menuItem: MyMenuItem? = null ) : ActionGroup() {
+class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup() {
 
     override fun update(e: AnActionEvent) {
 
@@ -30,46 +36,51 @@ class DynamicActionGroup(var menuItem: MyMenuItem? = null ) : ActionGroup() {
         val fileInputService = FileInputService.getInstance(project)
         val pluginSettingsService = PluginSettingsService.getInstance(project)
 
-        // TODO: Error Handling
-        if (menuItem == null) {
+        if (node == null) {
             // Read in top level menu item
-            menuItem = fileInputService.readConfigFileContents()
-
-            if (menuItem != null) {
-                // Update the current model with the menu that was just read in
-                pluginSettingsService.state.currentMenuItemConfig = menuItem
-            }
+            node = fileInputService.readConfigFileContents()
+            // GRAHAM TODO -- not sure what this was for
+//            if (menuItem != null) {
+//                // Update the current model with the menu that was just read in
+//                pluginSettingsService.state.currentMenuItemConfig = menuItem
+//            }
+            // add custom settings action
+            node!!.add(DefaultMutableTreeNode(MyMenuItem(label = SETTINGS_KEY)))
         }
 
-        val rootNode = DefaultMutableTreeNode(menuItem?.text)
-
-        val tree = Tree(rootNode)
-
+        val tree = Tree(node)
         tree.isRootVisible = true
         e.presentation.isPopupGroup = true
-        e.presentation.text = menuItem?.text
-        e.presentation.description = menuItem?.description
+        val casted = node!!.userObject as MyMenuItem
+
+        e.presentation.isPopupGroup = true
+        e.presentation.text = casted.label
+        e.presentation.description = casted.label + " description"
     }
 
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
-        if (menuItem!!.children.isNullOrEmpty()) return arrayOf()
+        if (node?.childCount == 0) return arrayOf()
 
         val array = mutableListOf<AnAction>()
-        menuItem!!.children!!.forEach {
-            if (it.addSeparatorBefore) array.add(Separator.getInstance())
-            if (it.children.isNullOrEmpty()) {
-                array.add(MyAction(it))
+        node!!.children().asIterator().forEach {
+            val casted = (it as DefaultMutableTreeNode).userObject as MyMenuItem
+            if (casted.isDivider) array.add(Separator.getInstance())
+            if (it.childCount == 0) {
+                if (casted.label == SETTINGS_KEY) {
+                    array.add(Separator.getInstance())
+                    array.add(OpenSettingsAction())
+                } else {
+                    array.add(MyAction(casted))
+                }
             } else {
                 array.add(DynamicActionGroup(it))
             }
-            if (it.addSeparatorAfter) array.add(Separator.getInstance())
-        }
-        // Add a custom edit menu to launch our UI
-        if (menuItem!!.isTopLevel) {
-            array.add(Separator.getInstance())
-            array.add(OpenSettingsAction())
         }
         return array.toTypedArray()
+    }
+
+    private companion object {
+        const val SETTINGS_KEY = "<settings_SDKFNDSK#%$(*#$%FNDS>"
     }
 
 }

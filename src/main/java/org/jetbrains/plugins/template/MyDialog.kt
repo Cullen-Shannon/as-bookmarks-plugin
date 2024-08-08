@@ -11,34 +11,31 @@ import javax.swing.JComponent
 
 /**
  * Maintenance dialog.
- * currentTree needed to determine what, if anything is selected
  */
-class MyDialog(val model: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit): DialogWrapper(true) {
+class MyDialog(val myMenuItem: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit): DialogWrapper(true) {
 
     private lateinit var _title: Cell<JBTextField>
-    private lateinit var _description: Cell<JBTextField>
     private lateinit var _url: Cell<JBTextField>
-    private lateinit var _isCollection: Cell<JBCheckBox>
+    private lateinit var _divider: Cell<JBCheckBox>
 
     private val panel = panel {
-        row("Title: ") {
-            _title = textField().bindText(model::text)
+        val title = row("Title: ") {
+            _title = textField().bindText(myMenuItem::label)
         }
-        row("Description: ") {
-            _description = textField().bindText(model::description)
+        val url = row("Url: ") {
+            _url = textField().bindText(myMenuItem::url)
         }
-        row {
-            _isCollection = checkBox("Is Collection").selected(model.children != null)
+        row("Is Divider: ") {
+            _divider = checkBox("Divider").bindSelected(myMenuItem::isDivider)
         }
-        row("Url: ") {
-            _url = textField().text(if (model.url == null) "" else model.url!!)
-        }.enabledIf(_isCollection.selected.not())
+        title.enabledIf(_divider.selected.not())
+        url.enabledIf(_divider.selected.not())
     }
 
     override fun doValidate(): ValidationInfo? {
+        if (_divider.component.isSelected) return null
         if (_title.component.text.isBlank()) return ValidationInfo("Title is required!")
-        if (_description.component.text.isBlank()) return ValidationInfo("Description is required!")
-        if (!_isCollection.component.isSelected && _url.component.text.isBlank()) return ValidationInfo("Url is required!")
+        if (!_url.component.text.startsWith("http")) return ValidationInfo("URL must include prefix!")
         return null
     }
 
@@ -51,14 +48,14 @@ class MyDialog(val model: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit): Dialo
 
     override fun doOKAction() {
         panel.apply() // needed to set
-        val isCollection = _isCollection.component.isSelected
-        model.url = if (isCollection) null else _url.component.text
-        model.children = if (isCollection) mutableListOf() else null
-        onSubmit(model)
+        myMenuItem.label = if (!myMenuItem.isDivider) _title.component.text else ""
+        myMenuItem.url = if (!myMenuItem.isDivider) _url.component.text else ""
+        myMenuItem.isDivider = _divider.component.isSelected
+        onSubmit(myMenuItem)
         super.doOKAction()
     }
 
-    override fun getPreferredFocusedComponent(): JComponent? {
+    override fun getPreferredFocusedComponent(): JComponent {
         return _title.component
     }
 }

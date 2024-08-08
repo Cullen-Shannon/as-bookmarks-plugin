@@ -12,16 +12,17 @@ import org.jetbrains.plugins.template.domain.MyMenuItem
  * other basic operations, like shell scripts, gradle tasks, api calls, help modals, etc.
  */
 class MyAction(private val menuItem: MyMenuItem): AnAction() {
+
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = e.project != null
-        e.presentation.text = menuItem.text
-        e.presentation.description = menuItem.description
+        e.presentation.text = menuItem.label
+        e.presentation.description = menuItem.label + " description"
     }
 
     override fun actionPerformed(e: AnActionEvent) {
         val browsers = WebBrowserManager.getInstance().browsers
-        if (browsers.isEmpty()) return
-        BrowserLauncher.instance.browse(menuItem.url!!, browsers.first())
+        if (browsers.isEmpty() || menuItem.url.isEmpty()) return
+        BrowserLauncher.instance.browse(menuItem.url, browsers.first())
     }
 
 }
