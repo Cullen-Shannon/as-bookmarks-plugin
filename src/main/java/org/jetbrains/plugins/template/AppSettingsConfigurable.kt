@@ -103,10 +103,13 @@ class AppSettingsConfigurable : Configurable {
             .registerTypeAdapterFactory(DefaultMutableTreeNodeTypeAdapter.FACTORY)
             .setPrettyPrinting()
             .create()
-        gson.toJson(tree.model.root)
+        val newJSON = gson.toJson(tree.model.root)
 
-        // GRAHAM TODO write serialized contents to file
+        if (newJSON != null) {
+            fileInputService.writeConfigFileContents(newJSON)
+        }
 
+        // Disable the "Apply" button after the updates are made
         isModified = false
 
     }

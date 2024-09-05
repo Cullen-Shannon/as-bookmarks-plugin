@@ -33,9 +33,8 @@ class FileInputService {
         return gson.fromJson(text.toString(), DefaultMutableTreeNode::class.java)
     }
 
-    fun writeConfigFileContents(newMenu: MyMenuItem, newFileName: String?) {
+    fun writeConfigFileContents(updatedJSON: String) {
         WriteCommandAction.runWriteCommandAction(project) {
-            val updatedJSON = Gson().toJson(newMenu, DefaultMutableTreeNode::class.java)
             val configFile = getCurrentConfigFile()
             configFile.isWritable = true
             VfsUtil.saveText(configFile, updatedJSON)
