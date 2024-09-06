@@ -7,7 +7,6 @@ import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.treeStructure.Tree
 import org.jetbrains.plugins.template.domain.MyMenuItem
 import org.jetbrains.plugins.template.services.FileInputService
-import org.jetbrains.plugins.template.services.PluginSettingsService
 import java.awt.Dimension
 import javax.swing.DropMode
 import javax.swing.JPanel
@@ -16,7 +15,6 @@ import javax.swing.tree.*
 class AppSettingsConfigurable : Configurable {
 
     private val project = ProjectManager.getInstance().openProjects.first()
-    private val pluginSettingsService = PluginSettingsService.getInstance(project)
     private val fileInputService = FileInputService.getInstance(project)
 
     // The tree representing the current `MyMenuItem` config, update this when adding/removing elements

@@ -8,7 +8,6 @@ import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.treeStructure.Tree
 import org.jetbrains.plugins.template.domain.MyMenuItem
 import org.jetbrains.plugins.template.services.FileInputService
-import org.jetbrains.plugins.template.services.PluginSettingsService
 import javax.swing.tree.DefaultMutableTreeNode
 
 /* TODOs
@@ -34,16 +33,14 @@ class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup
 
         val project = ProjectManager.getInstance().openProjects.first()
         val fileInputService = FileInputService.getInstance(project)
-        val pluginSettingsService = PluginSettingsService.getInstance(project)
 
-        if (node == null) {
+        // Ensure that we check if the menu has been altered since it was first read in
+        val latestMenuContents = fileInputService.readConfigFileContents()
+
+        if (node != latestMenuContents) {
             // Read in top level menu item
-            node = fileInputService.readConfigFileContents()
-            // GRAHAM TODO -- not sure what this was for
-//            if (menuItem != null) {
-//                // Update the current model with the menu that was just read in
-//                pluginSettingsService.state.currentMenuItemConfig = menuItem
-//            }
+            node = latestMenuContents
+
             // add custom settings action
             node!!.add(DefaultMutableTreeNode(MyMenuItem(label = SETTINGS_KEY)))
         }

@@ -1,6 +1,5 @@
 package org.jetbrains.plugins.template.services
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.Service
@@ -12,7 +11,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.plugins.template.DefaultMutableTreeNodeTypeAdapter
-import org.jetbrains.plugins.template.domain.MyMenuItem
 import javax.swing.tree.DefaultMutableTreeNode
 
 
@@ -20,7 +18,6 @@ import javax.swing.tree.DefaultMutableTreeNode
 class FileInputService {
 
     private val project = ProjectManager.getInstance().openProjects.first()
-    private val pluginSettingsService = PluginSettingsService.getInstance(project)
 
     val gson = GsonBuilder()
         .registerTypeAdapterFactory(DefaultMutableTreeNodeTypeAdapter.FACTORY)
