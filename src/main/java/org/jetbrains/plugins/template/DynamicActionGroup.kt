@@ -34,10 +34,10 @@ class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup
         val project = ProjectManager.getInstance().openProjects.first()
         val fileInputService = FileInputService.getInstance(project)
 
-        // Ensure that we check if the menu has been altered since it was first read in
         val latestMenuContents = fileInputService.readConfigFileContents()
 
-        if (node != latestMenuContents) {
+        // Ensure that we check if the menu has been altered since it was first read in (but only for top-level node)
+        if (node?.parent == null && node != latestMenuContents) {
             // Read in top level menu item
             node = latestMenuContents
 

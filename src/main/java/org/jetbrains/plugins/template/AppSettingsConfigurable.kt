@@ -47,20 +47,15 @@ class AppSettingsConfigurable : Configurable {
         val changed = MyDialog(MyMenuItem("", "")) {
             val selection = tree.lastSelectedPathComponent as DefaultMutableTreeNode?
             val _model = tree.model as DefaultTreeModel
-            if (selection == null) {
+            if (selection == null || selection.parent == null) {
                 // if nothing selected, add to top level
                 val root = _model.root as DefaultMutableTreeNode
                 root.add(DefaultMutableTreeNode(it))
                 _model.reload()
             } else {
                 // otherwise add within selection
-                if (selection.childCount != 0) {
-                    (selection.parent as DefaultMutableTreeNode).add(DefaultMutableTreeNode(it))
-                    _model.reload(selection.parent as DefaultMutableTreeNode)
-                } else {
-                    selection.add(DefaultMutableTreeNode(it))
-                    _model.reload(selection)
-                }
+                selection.add(DefaultMutableTreeNode(it))
+                _model.reload(selection)
             }
         }.showAndGet()
         if (changed) isModified = true
