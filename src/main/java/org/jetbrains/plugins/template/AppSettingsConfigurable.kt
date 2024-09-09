@@ -26,11 +26,14 @@ class AppSettingsConfigurable : Configurable {
     override fun createComponent() : JPanel {
         val model = fileInputService.readConfigFileContents()
         tree = Tree(model.root)
+
+        val currentConfigurable = this
+
         with (tree) {
             isRootVisible = true
             dragEnabled = true
             dropMode = DropMode.ON_OR_INSERT
-            transferHandler = TreeTransferHandler()
+            transferHandler = TreeTransferHandler(currentConfigurable)
             selectionModel.selectionMode = TreeSelectionModel.CONTIGUOUS_TREE_SELECTION
             addMouseListener(MyMouseListener(this) { myEditAction(this) })
         }
@@ -105,6 +108,13 @@ class AppSettingsConfigurable : Configurable {
         // Disable the "Apply" button after the updates are made
         isModified = false
 
+    }
+
+    fun setApplyToTrue() {
+        isModified = true
+
+        // Calling `isModified` explicitly here to ensure that the Apply button is always refreshed when dragging/dropped menu items
+        isModified()
     }
 
     override fun getDisplayName() = "Repo Depot"

@@ -13,14 +13,16 @@ import java.util.*;
 /*
     Copied from Stackoverflow to support drag and drop of JTree. There's a bug in here where dropping
     the object mistakenly creates userObject an extra level deep.
-    TODO Graham -- can you figure out how to set AppSettingsConfigurable's isModified to true when something is dragged/dropped?
  */
 class TreeTransferHandler extends TransferHandler {
     DataFlavor nodesFlavor;
     DataFlavor[] flavors = new DataFlavor[1];
     DefaultMutableTreeNode[] nodesToRemove;
 
-    public TreeTransferHandler() {
+    AppSettingsConfigurable configurable;
+
+    public TreeTransferHandler(AppSettingsConfigurable configurable) {
+        this.configurable = configurable;
         try {
             String mimeType = DataFlavor.javaJVMLocalObjectMimeType +
                     ";class=\"" +
@@ -107,7 +109,11 @@ class TreeTransferHandler extends TransferHandler {
     }
 
     private DefaultMutableTreeNode copy(DefaultMutableTreeNode node, HashSet<TreeNode> doneItems, JTree tree) {
-        DefaultMutableTreeNode copy = new DefaultMutableTreeNode(node);
+        DefaultMutableTreeNode copy = new DefaultMutableTreeNode();
+
+        // Create a new node to reset hierarchy, but copy over the userObject
+        copy.setUserObject(node.getUserObject());
+
         doneItems.add(node);
         for (int i = 0; i < node.getChildCount(); i++) {
             copy.add(copy((DefaultMutableTreeNode) ((TreeNode) node).getChildAt(i), doneItems, tree));
@@ -125,6 +131,9 @@ class TreeTransferHandler extends TransferHandler {
             for (int i = 0; i < nodesToRemove.length; i++) {
                 model.removeNodeFromParent(nodesToRemove[i]);
             }
+
+            // Set the "Apply" Button in the settings modal to be enabled
+            configurable.setApplyToTrue();
         }
     }
 
