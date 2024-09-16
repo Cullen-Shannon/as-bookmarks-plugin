@@ -30,6 +30,22 @@ class MyDialog(val myMenuItem: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit): 
         }
         title.enabledIf(_divider.selected.not())
         url.enabledIf(_divider.selected.not())
+
+        _title.component.document.addDocumentListener(textListener(_title.component))
+        _url.component.document.addDocumentListener(textListener(_url.component))
+    }
+
+    // Enable the OK button when the user enters text
+    private fun textListener(component: JBTextField) = object : javax.swing.event.DocumentListener {
+        override fun insertUpdate(e: javax.swing.event.DocumentEvent) {
+            isOKActionEnabled = component.text.isNotEmpty()
+        }
+        override fun removeUpdate(e: javax.swing.event.DocumentEvent) {
+            isOKActionEnabled = component.text.isNotEmpty()
+        }
+        override fun changedUpdate(e: javax.swing.event.DocumentEvent) {
+            isOKActionEnabled = component.text.isNotEmpty()
+        }
     }
 
     override fun doValidate(): ValidationInfo? {
@@ -42,6 +58,7 @@ class MyDialog(val myMenuItem: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit): 
     init {
         title = "Maintain Entry"
         init()
+        isOKActionEnabled = _title.component.text.isNotEmpty() && _url.component.text.isNotEmpty()
     }
 
     override fun createCenterPanel() = panel
