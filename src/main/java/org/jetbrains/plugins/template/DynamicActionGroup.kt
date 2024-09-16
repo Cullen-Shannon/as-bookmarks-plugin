@@ -1,14 +1,13 @@
 package org.jetbrains.plugins.template
 
-import com.intellij.openapi.actionSystem.ActionGroup
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.Separator
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.treeStructure.Tree
+import org.jetbrains.annotations.NotNull
 import org.jetbrains.plugins.template.domain.MyMenuItem
 import org.jetbrains.plugins.template.services.FileInputService
 import javax.swing.tree.DefaultMutableTreeNode
+
 
 /* TODOs
     replace pluginIcon.svg with something more meaningful
@@ -45,14 +44,16 @@ class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup
             node!!.add(DefaultMutableTreeNode(MyMenuItem(label = SETTINGS_KEY)))
         }
 
-        val tree = Tree(node)
-        tree.isRootVisible = true
-        e.presentation.isPopupGroup = true
-        val casted = node!!.userObject as MyMenuItem
+        if (node != null && node?.userObject != null) {
+            val tree = Tree(node)
+            tree.isRootVisible = true
+            e.presentation.isPopupGroup = true
+            val casted = node!!.userObject as MyMenuItem
 
-        e.presentation.isPopupGroup = true
-        e.presentation.text = casted.label
-        e.presentation.description = casted.label + " description"
+            e.presentation.isPopupGroup = true
+            e.presentation.text = casted.label
+            e.presentation.description = casted.label + " description"
+        }
     }
 
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
@@ -74,6 +75,11 @@ class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup
             }
         }
         return array.toTypedArray()
+    }
+
+    // Resolves 'org.jetbrains.plugins.template.DynamicActionGroup' must override `getActionUpdateThread()` and chose EDT or BGT error
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.EDT
     }
 
     private companion object {
