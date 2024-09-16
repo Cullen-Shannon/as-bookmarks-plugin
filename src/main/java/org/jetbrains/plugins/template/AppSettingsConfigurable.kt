@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.ToolbarDecorator
+import com.intellij.openapi.ui.Messages
 import com.intellij.ui.treeStructure.Tree
 import org.jetbrains.plugins.template.domain.MyMenuItem
 import org.jetbrains.plugins.template.services.FileInputService
@@ -23,13 +24,13 @@ class AppSettingsConfigurable : Configurable {
     // `isModified` controls enabling/disabling the "Apply" button
     private var isModified = false
 
-    override fun createComponent() : JPanel {
+    override fun createComponent(): JPanel {
         val model = fileInputService.readConfigFileContents()
         tree = Tree(model.root)
 
         val currentConfigurable = this
 
-        with (tree) {
+        with(tree) {
             isRootVisible = true
             dragEnabled = true
             dropMode = DropMode.ON_OR_INSERT
@@ -67,8 +68,18 @@ class AppSettingsConfigurable : Configurable {
     private fun myRemoveAction() {
         val selection = tree.lastSelectedPathComponent as DefaultMutableTreeNode
         val _model = tree.model as DefaultTreeModel
-        _model.removeNodeFromParent(selection)
-        isModified = true
+
+        if (selection.parent == null) {
+            // Show a modal dialog warning the user that the root node cannot be removed
+            Messages.showMessageDialog(
+                "The root entry can't be removed, please edit or move the entry instead.",
+                "Invalid Operation",
+                Messages.getErrorIcon()
+            )
+        } else {
+            _model.removeNodeFromParent(selection)
+            isModified = true
+        }
     }
 
     fun myEditAction(tree: Tree): Boolean {
@@ -76,7 +87,8 @@ class AppSettingsConfigurable : Configurable {
         val myMenuItem = if (selection.userObject is MyMenuItem) {
             selection.userObject as MyMenuItem
         } else if (selection.userObject is DefaultMutableTreeNode &&
-            (selection.userObject as DefaultMutableTreeNode).userObject is MyMenuItem) {
+            (selection.userObject as DefaultMutableTreeNode).userObject is MyMenuItem
+        ) {
             // a bug in drag-and-drop accidentally nests the user object down a level, so grabbing it from there
             // TODO investigate in drag-and-drop file
             (selection.userObject as DefaultMutableTreeNode).userObject as MyMenuItem
