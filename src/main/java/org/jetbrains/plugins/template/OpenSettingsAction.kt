@@ -1,5 +1,6 @@
 package org.jetbrains.plugins.template
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.options.ShowSettingsUtil
@@ -18,4 +19,8 @@ class OpenSettingsAction: AnAction() {
         ShowSettingsUtil.getInstance().showSettingsDialog(e.project, AppSettingsConfigurable::class.java)
     }
 
+    // Resolves 'org.jetbrains.plugins.template.DynamicActionGroup' must override `getActionUpdateThread()` and chose EDT or BGT error
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.EDT
+    }
 }

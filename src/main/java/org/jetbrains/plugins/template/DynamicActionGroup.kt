@@ -1,15 +1,13 @@
 package org.jetbrains.plugins.template
 
-import com.intellij.openapi.actionSystem.ActionGroup
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.Separator
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.treeStructure.Tree
+import org.jetbrains.annotations.NotNull
 import org.jetbrains.plugins.template.domain.MyMenuItem
 import org.jetbrains.plugins.template.services.FileInputService
-import org.jetbrains.plugins.template.services.PluginSettingsService
 import javax.swing.tree.DefaultMutableTreeNode
+
 
 /* TODOs
     replace pluginIcon.svg with something more meaningful
@@ -34,28 +32,28 @@ class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup
 
         val project = ProjectManager.getInstance().openProjects.first()
         val fileInputService = FileInputService.getInstance(project)
-        val pluginSettingsService = PluginSettingsService.getInstance(project)
 
-        if (node == null) {
+        val latestMenuContents = fileInputService.readConfigFileContents()
+
+        // Ensure that we check if the menu has been altered since it was first read in (but only for top-level node)
+        if (node?.parent == null && node != latestMenuContents) {
             // Read in top level menu item
-            node = fileInputService.readConfigFileContents()
-            // GRAHAM TODO -- not sure what this was for
-//            if (menuItem != null) {
-//                // Update the current model with the menu that was just read in
-//                pluginSettingsService.state.currentMenuItemConfig = menuItem
-//            }
+            node = latestMenuContents
+
             // add custom settings action
             node!!.add(DefaultMutableTreeNode(MyMenuItem(label = SETTINGS_KEY)))
         }
 
-        val tree = Tree(node)
-        tree.isRootVisible = true
-        e.presentation.isPopupGroup = true
-        val casted = node!!.userObject as MyMenuItem
+        if (node != null && node?.userObject != null) {
+            val tree = Tree(node)
+            tree.isRootVisible = true
+            e.presentation.isPopupGroup = true
+            val casted = node!!.userObject as MyMenuItem
 
-        e.presentation.isPopupGroup = true
-        e.presentation.text = casted.label
-        e.presentation.description = casted.label + " description"
+            e.presentation.isPopupGroup = true
+            e.presentation.text = casted.label
+            e.presentation.description = casted.label + " description"
+        }
     }
 
     override fun getChildren(e: AnActionEvent?): Array<AnAction> {
@@ -77,6 +75,11 @@ class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup
             }
         }
         return array.toTypedArray()
+    }
+
+    // Resolves 'org.jetbrains.plugins.template.DynamicActionGroup' must override `getActionUpdateThread()` and chose EDT or BGT error
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.EDT
     }
 
     private companion object {
