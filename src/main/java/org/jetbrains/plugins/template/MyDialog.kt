@@ -77,9 +77,19 @@ class MyDialog(val myMenuItem: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit) :
 
     override fun doOKAction() {
         panel.apply() // needed to set
-        myMenuItem.label = if (!myMenuItem.isDivider) _title.component.text else ""
-        myMenuItem.url = if (!myMenuItem.isDivider) _url.component.text else ""
         myMenuItem.isDivider = _divider.component.isSelected
+        myMenuItem.label = if (!myMenuItem.isDivider){
+            _title.component.text
+        } else {
+            _title.component.text = ""
+            ""
+        }
+        myMenuItem.url = if (!myMenuItem.isDivider) {
+            _url.component.text
+        } else {
+            _url.component.text = ""
+            ""
+        }
         onSubmit(myMenuItem)
         super.doOKAction()
     }
