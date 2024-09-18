@@ -123,10 +123,10 @@ class AppSettingsConfigurable : Configurable {
     }
 
     fun setApplyToTrue() {
-        isModified = true
+            isModified = true
 
-        // Calling `isModified` explicitly here to ensure that the Apply button is always refreshed when dragging/dropped menu items
-        isModified()
+            // Calling `isModified` explicitly here to ensure that the Apply button is always refreshed when dragging/dropped menu items
+            isModified()
     }
 
     override fun getDisplayName() = "Repo Depot"

@@ -125,15 +125,15 @@ class TreeTransferHandler extends TransferHandler {
 
     protected void exportDone(JComponent source, Transferable data, int action) {
         if ((action & MOVE) == MOVE) {
+            // Set the "Apply" Button in the settings modal to be enabled
+            configurable.setApplyToTrue();
+
             JTree tree = (JTree) source;
             DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
             // Remove nodes saved in nodesToRemove in createTransferable.
             for (int i = 0; i < nodesToRemove.length; i++) {
                 model.removeNodeFromParent(nodesToRemove[i]);
             }
-
-            // Set the "Apply" Button in the settings modal to be enabled
-            configurable.setApplyToTrue();
         }
     }
 
