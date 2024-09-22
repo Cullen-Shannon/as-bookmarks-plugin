@@ -23,7 +23,7 @@ class FileInputService {
 
     private val project = ProjectManager.getInstance().openProjects.first()
 
-    val gson = GsonBuilder()
+    private val gson = GsonBuilder()
         .registerTypeAdapterFactory(DefaultMutableTreeNodeTypeAdapter.FACTORY)
         .setPrettyPrinting()
         .create()

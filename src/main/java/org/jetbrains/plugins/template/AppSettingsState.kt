@@ -14,9 +14,6 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 @State(name = "org.jetbrains.plugins.template.AppSettingsState", storages = [Storage("SdkSettingsPlugin.xml")])
 class AppSettingsState: PersistentStateComponent<AppSettingsState> {
 
-    var userId = "John Q. Public"
-    var ideaStatus = false
-
     override fun getState() = this
 
     override fun loadState(state: AppSettingsState) = XmlSerializerUtil.copyBean(state, this)

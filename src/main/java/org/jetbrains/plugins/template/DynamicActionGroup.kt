@@ -62,7 +62,10 @@ class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup
         val array = mutableListOf<AnAction>()
         node!!.children().asIterator().forEach {
             val casted = (it as DefaultMutableTreeNode).userObject as MyMenuItem
-            if (casted.isDivider) array.add(Separator.getInstance())
+            if (casted.isDivider) {
+                array.add(Separator.getInstance())
+                return@forEach
+            }
             if (it.childCount == 0) {
                 if (casted.label == SETTINGS_KEY) {
                     array.add(Separator.getInstance())
