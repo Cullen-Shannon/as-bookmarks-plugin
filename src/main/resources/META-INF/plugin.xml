@@ -11,11 +11,7 @@
     <!--    Removed this line since it threw an error-->
     <!--    <depends>com.intellij.modules.androidstudio</depends>-->
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
-
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="org.jetbrains.plugins.template.AppSettingsState"/>
-
         <applicationConfigurable
                 parentId="tools"
                 instance="org.jetbrains.plugins.template.AppSettingsConfigurable"
@@ -40,7 +36,4 @@
 
     </actions>
 
-    <applicationListeners>
-        <listener class="org.jetbrains.plugins.template.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>
