@@ -4,7 +4,8 @@ import com.google.gson.GsonBuilder
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.fileEditor.impl.LoadTextUtil
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VfsUtil
@@ -31,16 +32,19 @@ class FileInputService {
     fun readConfigFileContents(): DefaultMutableTreeNode {
         val configFile = getCurrentConfigFile()
 
+        // Get the Document associated with this VirtualFile (for unsaved changes)
+        val document: Document? =  if (configFile != null) {
+            FileDocumentManager.getInstance().getDocument(configFile)
+        } else {
+            null
+        }
+
         // Load the repo_depot.json file
         // If one doesn't exist the first time the user opens the "Tools" menu,
         // we show default config from a hardcoded JSON String, while creating a new corresponding default file in the background
         // After this point, a file will always exists (unless the user chooses to delete it).
-        val text = if (configFile != null) {
-            LoadTextUtil.loadText(configFile)
-        } else {
-            defaultJSONString
-        }
-        return gson.fromJson(text.toString(), DefaultMutableTreeNode::class.java)
+        val text = document?.text ?: defaultJSONString
+        return gson.fromJson(text, DefaultMutableTreeNode::class.java)
     }
 
     fun writeConfigFileContents(updatedJSON: String) {
