@@ -1,11 +1,11 @@
 package org.jetbrains.plugins.template.services
 
 import com.google.gson.GsonBuilder
-import com.google.gson.stream.MalformedJsonException
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.fileEditor.impl.LoadTextUtil
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vfs.VfsUtil
@@ -36,7 +36,12 @@ class FileInputService {
         // After this point, a file will always exists (unless the user chooses to delete it).
         val defaultResponse = gson.fromJson(defaultJSONString, DefaultMutableTreeNode::class.java)
         val configFile = getCurrentConfigFile() ?: return defaultResponse
-        val text = LoadTextUtil.loadText(configFile).toString()
+
+        // Get the Document associated with this VirtualFile (for unsaved changes)
+        val document: Document? = FileDocumentManager.getInstance().getDocument(configFile)
+
+        val text = document?.text ?: return defaultResponse
+
         return try {
             gson.fromJson(text, DefaultMutableTreeNode::class.java)
         } catch (e: Exception) { // TODO should be more granular
