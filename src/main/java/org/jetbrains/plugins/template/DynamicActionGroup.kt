@@ -3,16 +3,9 @@ package org.jetbrains.plugins.template
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.ui.treeStructure.Tree
-import org.jetbrains.annotations.NotNull
 import org.jetbrains.plugins.template.domain.MyMenuItem
 import org.jetbrains.plugins.template.services.FileInputService
 import javax.swing.tree.DefaultMutableTreeNode
-
-
-/* TODOs
-    replace pluginIcon.svg with something more meaningful
-    update plugin.xml with our publishing info
-*/
 
 /*
     For V2:
@@ -20,7 +13,6 @@ import javax.swing.tree.DefaultMutableTreeNode
         support other functions besides links to browser (shell, gradle tasks, information bubbles, etc.)
         rewrite any java classes in Kotlin
  */
-
 
 /**
  * Represents a group of menu items. menuItem will be null for the top level menu defined in plugin.xml.
@@ -62,7 +54,10 @@ class DynamicActionGroup(var node: DefaultMutableTreeNode? = null) : ActionGroup
         val array = mutableListOf<AnAction>()
         node!!.children().asIterator().forEach {
             val casted = (it as DefaultMutableTreeNode).userObject as MyMenuItem
-            if (casted.isDivider) array.add(Separator.getInstance())
+            if (casted.isDivider) {
+                array.add(Separator.getInstance())
+                return@forEach
+            }
             if (it.childCount == 0) {
                 if (casted.label == SETTINGS_KEY) {
                     array.add(Separator.getInstance())
