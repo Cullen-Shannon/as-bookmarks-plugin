@@ -32,8 +32,8 @@ class MyDialog(val myMenuItem: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit) :
         title.enabledIf(_divider.selected.not())
         url.enabledIf(_divider.selected.not())
 
-        _title.component.document.addDocumentListener(textListener(_title.component, _divider.selected))
-        _url.component.document
+        _title.component.document.addDocumentListener(textListener(_title.component))
+        _url.component.document.addDocumentListener(textListener(_title.component))
 
         _divider.component.addActionListener {
             // Enable the OK button if
@@ -45,8 +45,8 @@ class MyDialog(val myMenuItem: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit) :
         }
     }
 
-    // Enable the OK button when the user enters text in the label field (if this isn't a divider)
-    private fun textListener(component: JBTextField, isDivider: ComponentPredicate) = object : javax.swing.event.DocumentListener {
+    // Enable the OK button when the user enters text in the label field
+    private fun textListener(component: JBTextField) = object : javax.swing.event.DocumentListener {
         override fun insertUpdate(e: javax.swing.event.DocumentEvent) {
             isOKActionEnabled = component.text.isNotEmpty()
         }
@@ -63,7 +63,7 @@ class MyDialog(val myMenuItem: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit) :
     override fun doValidate(): ValidationInfo? {
         if (_divider.component.isSelected) return null
         if (_title.component.text.isBlank()) return ValidationInfo("Title is required!")
-        if (_url.component.text.isNotEmpty() && !_url.component.text.startsWith("http")) return ValidationInfo("URL must include prefix!")
+        if (_url.component.text.isNotEmpty() && !_url.component.text.matches(urlRegex)) return ValidationInfo("URL must include prefix!")
         return null
     }
 
@@ -96,5 +96,9 @@ class MyDialog(val myMenuItem: MyMenuItem, val onSubmit: (MyMenuItem) -> Unit) :
 
     override fun getPreferredFocusedComponent(): JComponent {
         return _title.component
+    }
+
+    companion object {
+        val urlRegex = "^(https?://)([\\w-]+\\.)+[\\w-]+(:\\d+)?(/\\S*)?$".toRegex()
     }
 }
