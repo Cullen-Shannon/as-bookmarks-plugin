@@ -12,7 +12,7 @@ Nest and organize them in the Settings menu:<br>
 Maintain them in the Settings UI:<br>
 ![Maintain Entry](.github/readme/maintain-entry.png)
 
-The menu configuration persists in a root-level file called `repo_depot.json`. If the file doesn't exist, it'll be created automatically.
+The menu configuration persists in a root-level file called `repo_depot.json`. If the file doesn't exist, it'll be created automatically.<br>
 ![Repo Depot](.github/readme/repo-depot.png)
 
 
