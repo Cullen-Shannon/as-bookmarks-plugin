@@ -59,7 +59,6 @@ koverReport {
 
 tasks {
     buildSearchableOptions {
-        // Check this
         enabled = false
     }
 

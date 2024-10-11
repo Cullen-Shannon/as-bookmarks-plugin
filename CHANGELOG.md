@@ -5,5 +5,5 @@
 ## [Unreleased]
 
 ## [1.0.0] - 2024-10-09
-### Added
+### 1.0.0
 - Initial project release
