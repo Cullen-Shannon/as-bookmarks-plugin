@@ -2,14 +2,10 @@
 <idea-plugin>
     <id>com.cullen.graham.repodepot</id>
     <name>Repo Depot</name>
-    <vendor>Cullen Graham</vendor>
+    <vendor>Repo Depot Team</vendor>
 
-    <depends>com.intellij.modules.platform</depends>
-
-    <depends>org.jetbrains.android</depends>
-
-    <!--    Removed this line since it threw an error-->
-    <!--    <depends>com.intellij.modules.androidstudio</depends>-->
+    <!-- This should mark the plugin as being compatible with IntelliJ IDEA & Android Studio per https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html-->
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable

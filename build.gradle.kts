@@ -58,6 +58,10 @@ koverReport {
 }
 
 tasks {
+    buildSearchableOptions {
+        enabled = false
+    }
+
     wrapper {
         gradleVersion = properties("gradleVersion").get()
     }
@@ -107,6 +111,12 @@ tasks {
         certificateChain = environment("CERTIFICATE_CHAIN")
         privateKey = environment("PRIVATE_KEY")
         password = environment("PRIVATE_KEY_PASSWORD")
+    }
+
+    // This is a gradle task to run the "plugin verifier" when publishing to the Jetbrains Marketplace locally.
+    // Checking against Giraffe, Hedgehog, Iguana, Jellyfish, Koala, can add more versions here as needed
+    runPluginVerifier {
+        ideVersions.set(listOf("231.9392.1", "232.10227.8","233.14808.21","241.15989.150"))
     }
 
     runIde {
