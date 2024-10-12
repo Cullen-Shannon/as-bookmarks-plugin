@@ -4,17 +4,16 @@
 **Repo Depot** is a simple JetBrains plugin that lets teams share common bookmarks through source control and open them through their IDE.
 
 Bookmarks are available under Tools:<br>
-![Select Bookmark](.github/readme/select-bookmark.png)
+![Select Bookmark](https://raw.githubusercontent.com/Cullen-Shannon/as-bookmarks-plugin/main/.github/readme/select-bookmark.png)
 
 Nest and organize them in the Settings menu:<br>
-![Settings Menu](.github/readme/settings-menu.png)
+![Settings Menu](https://raw.githubusercontent.com/Cullen-Shannon/as-bookmarks-plugin/main/.github/readme/settings-menu.png)
 
 Maintain them in the Settings UI:<br>
-![Maintain Entry](.github/readme/maintain-entry.png)
+![Maintain Entry](https://raw.githubusercontent.com/Cullen-Shannon/as-bookmarks-plugin/main/.github/readme/maintain-entry.png)
 
 The menu configuration persists in a root-level file called `repo_depot.json`. If the file doesn't exist, it'll be created automatically.<br>
-![Repo Depot](.github/readme/repo-depot.png)
-
+![Repo Depot](https://raw.githubusercontent.com/Cullen-Shannon/as-bookmarks-plugin/main/.github/readme/repo-depot.png)
 
 > **Note**
 >
