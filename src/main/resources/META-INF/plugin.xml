@@ -9,7 +9,7 @@
 
        <ul>
            <li>Bookmarks are available under Tools</li>
-           <li>Bookmarks are maintained in the Settings UI</li>
+           <li>Bookmarks are maintained within the Settings UI</li>
            <li>Bookmarks can be nested and organized within the Settings menu</li>
            <li>The menu configuration persists in a root-level file called <code>repo_depot.json</code>. If the file doesn't exist, it'll be created automatically</li>
        </ul>
