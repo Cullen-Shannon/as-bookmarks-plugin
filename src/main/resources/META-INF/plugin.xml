@@ -4,6 +4,20 @@
     <name>Repo Depot</name>
     <vendor>Repo Depot Team</vendor>
 
+    <description><![CDATA[
+       <p> <b>Repo Depot</b> is a simple JetBrains plugin that lets teams share common bookmarks through source control and open them through their IDE.</p>
+
+       <ul>
+           <li>Bookmarks are available under Tools</li>
+           <li>Bookmarks are maintained in the Settings UI</li>
+           <li>Bookmarks can be nested and organized within the Settings menu</li>
+           <li>The menu configuration persists in a root-level file called <code>repo_depot.json</code>. If the file doesn't exist, it'll be created automatically</li>
+       </ul>
+
+        <p><b>Note:</b></p>
+        <p>Teams may want to exclude <code>repot_depot.json</code> from their CI/CD processes to quickly change their bookmarks via pull requests, without triggering long-running build validation processes.</p>
+    ]]></description>
+
     <!-- This should mark the plugin as being compatible with IntelliJ IDEA & Android Studio per https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html-->
     <depends>com.intellij.modules.java</depends>
 
