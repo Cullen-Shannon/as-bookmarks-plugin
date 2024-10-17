@@ -46,4 +46,8 @@
 
     </actions>
 
+    <!-- Plugin Dependencies -> https://plugins.jetbrains.com/docs/intellij/plugin-dependencies.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
 </idea-plugin>
