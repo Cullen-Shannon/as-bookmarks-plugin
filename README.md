@@ -32,7 +32,7 @@ Run with the Run Plugin build config:<br>
 
 - Add any relevant release notes to `CHANGELOG.md`
 - Within the project's root directory, run `./gradlew buildPlugin`
-- A new .zip file will be created within build/distributions corresponding to the release
+- A new .zip file will be created within `/build/distributions` corresponding to the release
 - Login to the JetBrains marketplace at https://plugins.jetbrains.com > navigate to the plugin > select "Upload Update" & upload the generated .zip file
 
 ## License
