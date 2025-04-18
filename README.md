@@ -28,6 +28,13 @@ Development for this plugin requires the use of IntelliJ CE. We targeted Android
 Run with the Run Plugin build config:<br>
 ![Select Bookmark](.github/readme/run-plugin.png)
 
+### How to build a new release
+
+- Add any relevant release notes to `CHANGELOG.md`
+- Within the project's root directory, run `./gradlew buildPlugin`
+- A new .zip file will be created within build/distributions corresponding to the release
+- Login to the JetBrains marketplace at https://plugins.jetbrains.com > navigate to the plugin > select "Upload Update" & upload the generated .zip file
+
 ## License
 
 Distributed under the Apache License. See `LICENSE` for more information.
